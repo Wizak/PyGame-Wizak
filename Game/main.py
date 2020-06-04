@@ -70,13 +70,13 @@ b_color = (255, 0, 0)
 #Object enemy
 e_resolution_wh = 40
 e_pos_xy = [100-int(e_resolution_wh/2)]*2
-e_speed = [0]*2
+e_speed = [5]*2
 e_color = [255, 0, 0]
 
 #Object hero
 h_resolution_wh = 20
 h_pos_xy = [int((window_size[i]-h_resolution_wh)/2) for i in [0,1]]
-h_speed = [2]*2
+h_speed = [10]*2
 h_color = [0, 0, 255]
 h_health = 5
 
