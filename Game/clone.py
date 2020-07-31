@@ -1,5 +1,5 @@
 import pygame
-
+#ПТН ПНХ
 MENU_CLOUD = None
 SCREEN = None
 KEYS = None
