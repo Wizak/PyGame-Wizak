@@ -1,10 +1,4 @@
 import pygame
-import pkg_resources.py2_warn
-
-try:
-    import pkg_resources.py2_warn
-except ImportError:
-    pass
 
 
 #General initializing
