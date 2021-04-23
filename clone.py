@@ -1,4 +1,6 @@
 import pygame
+import random
+
 
 MENU_CLOUD = None
 SCREEN = None
@@ -24,9 +26,11 @@ MENU_SUN_RESOLUTION = 350, 350
 MENU_CLOUD_RESOLUTION = 600, 600
 MENU_CLOUD_POS = [-40, -100]
 CURSOR_RESOLUTION = 50, 50
-SETTING_SLIDE_POS = [-450, 100]
+SETTING_SLIDE_POS = [-400, 100]
 SETTING_SLIDE_RESOLUTION = [200, 200]
 SETTING_SLIDE_SPEED = [10]*2
+SETTING_TEXT_POS = [-450, 300]
+SETTING_TEXT_RESOLUTION = [250, 70]
 CIRCLE_SIZE = int(SCREEN_SIZE[0]/2)
 CIRCLE_POS = [int(CIRCLE_SIZE/2-50), int(CIRCLE_SIZE/2)+75]
 CIRCLE_COLOR = 255, 255, 255
@@ -35,6 +39,10 @@ AVATAR_SPEED = [2]*2
 AVATAR_SPEED_1 = [10]*2
 TEXT_POS = [[675, 230], [620, 530], [150, 15], [155, 15], [620, 20]]
 BACKGROUND = 0, 0, 0
+GAME_BORDER_COLOR = 0, 255, 0
+GAME_BORDER_POS = [0]*2
+GAME_BORDER_WITDH = 20
+GAME_BORDER_RESOLUTION = list(SCREEN_SIZE)
 TEXT_SIZE = 80, 35, 50, 50, 35
 TEXT_COLOR = [(255, 0, 0), (255, 0, 0), (0, 0, 0), (255, 0, 0), (255, 0, 0)]
 INTRO_RESOLUTION = [300, 300]
@@ -45,20 +53,21 @@ INTRO_3_POS = [-200, 200]
 TEXT_TYPE = ['Comic Sans MS']*5
 TEXT_NAME = 'PLAY', 'SOUND', 'AUTUST', 'AUTUST', 'SETTING'
 SCREEN_CAPTION = 'AuTust'
-SETTING_SLIDE_FILENAME = 'keys.png'
-MENU_AVATAR_FILENAME = 'enemy.png'
-MENU_SUN_FILENAME = 'sun.png'
-MENU_CLOUD_FILENAME = 'cloud.png'
-ICON_FILENAME = 'icon.png'
-CURSOR_FILENAME = 'cursor.png'
-BACKGROUND_MUSIC_FILENAME = 'lil.mp3'
-INTRO_1_FILENAME = 'intro_1.png'
-INTRO_2_FILENAME = 'intro_2.png'
-INTRO_3_FILENAME = 'intro_3.png'
+SETTING_SLIDE_FILENAME = 'static/image/keys.png'
+SETTING_TEXT_FILENAME = 'static/image/setting.png'
+MENU_AVATAR_FILENAME = 'static/image/enemy.png'
+MENU_SUN_FILENAME = 'static/image/sun.png'
+MENU_CLOUD_FILENAME = 'static/image/cloud.png'
+ICON_FILENAME = 'static/image/icon.png'
+CURSOR_FILENAME = 'static/image/cursor.png'
+BACKGROUND_MUSIC_FILENAME = 'static/audio/lil.mp3'
+INTRO_1_FILENAME = 'static/image/intro_1.png'
+INTRO_2_FILENAME = 'static/image/intro_2.png'
+INTRO_3_FILENAME = 'static/image/intro_3.png'
 
 
 def game_init():
-    global SCREEN, MENU_AVATAR, MENU_SUN, CURSOR, CLOCK, KEYS, MENU_CLOUD, SETTING_SLIDE, INTRO_1, INTRO_2, INTRO_3
+    global SCREEN, MENU_AVATAR, MENU_SUN, CURSOR, CLOCK, KEYS, MENU_CLOUD, SETTING_SLIDE, SETTING_TEXT, INTRO_1, INTRO_2, INTRO_3
 
     pygame.init()
     pygame.font.init()
@@ -74,6 +83,7 @@ def game_init():
     INTRO_2 = pygame.transform.scale(pygame.image.load(INTRO_2_FILENAME), INTRO_RESOLUTION)
     INTRO_3 = pygame.transform.scale(pygame.image.load(INTRO_3_FILENAME), INTRO_RESOLUTION)
     SETTING_SLIDE = pygame.transform.scale(pygame.image.load(SETTING_SLIDE_FILENAME), SETTING_SLIDE_RESOLUTION)
+    SETTING_TEXT = pygame.transform.scale(pygame.image.load(SETTING_TEXT_FILENAME), SETTING_TEXT_RESOLUTION)
 
     CURSOR = pygame.transform.scale(pygame.image.load(CURSOR_FILENAME), CURSOR_RESOLUTION)
     CLOCK = pygame.time.Clock()
@@ -85,6 +95,7 @@ def game_init():
     pygame.mouse.set_visible(False)
     pygame.mixer.music.load(BACKGROUND_MUSIC_FILENAME)
     pygame.mixer.music.play()
+
 
 def game_event():
     global INTRO, SOUND, TEXT, TEXT_COLOR, SETTING
@@ -126,6 +137,7 @@ def game_event():
         if i.type == pygame.QUIT:
             pygame.quit()
 
+
 def display_menu():
     global AVATAR_POS, AVATAR_SPEED, MENU_SUN, MENU_SETTING_SLIDE, SETTING, INTRO, CIRCLE_SIZE, MENU_ACTIVATE, GAME_ACTIVATE
 
@@ -138,11 +150,11 @@ def display_menu():
         SCREEN.blit(MENU_CLOUD, MENU_CLOUD_POS)
         for i,j in zip(TEXT, TEXT_POS):
             SCREEN.blit(i, j)
-        SCREEN.blit(CURSOR, pygame.mouse.get_pos())
 
         if SETTING == False:
             if MENU_SETTING_SLIDE:
                 SCREEN.blit(SETTING_SLIDE, SETTING_SLIDE_POS)
+                SCREEN.blit(SETTING_TEXT, SETTING_TEXT_POS)
 
                 if AVATAR_POS[0] <= 120 and MENU_CLOUD_POS[0] <= 120:
                     AVATAR_POS[0] += -AVATAR_SPEED_1[0]
@@ -152,8 +164,9 @@ def display_menu():
                         AVATAR_SPEED[1] = -AVATAR_SPEED[1]
                     AVATAR_POS[1] += AVATAR_SPEED[1]
 
-                if SETTING_SLIDE_POS[0] >= -200:
+                if SETTING_SLIDE_POS[0] >= -400:
                     SETTING_SLIDE_POS[0] += -SETTING_SLIDE_SPEED[0]
+                    SETTING_TEXT_POS[0] += -SETTING_SLIDE_SPEED[0]
             else:
                 if SOUND:
                     MENU_SUN = pygame.transform.rotate(MENU_SUN, 90)
@@ -168,20 +181,24 @@ def display_menu():
             else:
                 MENU_SETTING_SLIDE = True
 
-            AVATAR_POS[0] += AVATAR_SPEED_1[0]
-            MENU_CLOUD_POS[0] += AVATAR_SPEED_1[0]
+            if AVATAR_POS[0] > -700 and MENU_CLOUD_POS[0] > -700:
+                AVATAR_POS[0] += AVATAR_SPEED_1[0]
+                MENU_CLOUD_POS[0] += AVATAR_SPEED_1[0]
 
             if MENU_SETTING_SLIDE:
                 SCREEN.blit(SETTING_SLIDE, SETTING_SLIDE_POS)
+                SCREEN.blit(SETTING_TEXT, SETTING_TEXT_POS)
 
             if SETTING_SLIDE_POS[0] <= 150:
                 SETTING_SLIDE_POS[0] += SETTING_SLIDE_SPEED[0]
+                SETTING_TEXT_POS[0] += SETTING_SLIDE_SPEED[0]
 
         if INTRO:
             STATUS = False
 
             if MENU_SETTING_SLIDE and SETTING_SLIDE_POS[0] >= -300:
                 SETTING_SLIDE_POS[0] += -30
+                SETTING_TEXT_POS[0] += -30
             if AVATAR_POS[0] >= -400:
                 AVATAR_POS[0] += -5
             if MENU_CLOUD_POS[0] >= -700:
@@ -221,17 +238,35 @@ def display_menu():
                                 MENU_ACTIVATE = False
                                 GAME_ACTIVATE = True
 
-        game_event()
-        CLOCK.tick(60)
-        pygame.display.update()
-
-def display_game():
-    while 1:
-        SCREEN.fill(BACKGROUND)
         SCREEN.blit(CURSOR, pygame.mouse.get_pos())
         game_event()
         CLOCK.tick(60)
         pygame.display.update()
+
+
+def display_game():
+    GAME_ENEMY = [
+        [0, 0, 0],
+        [0, 0] + list(SCREEN_SIZE),
+        0
+    
+    ]
+    i = 0 
+
+    while 1:
+        i += 1
+        SCREEN.fill(BACKGROUND)
+        pygame.draw.rect(SCREEN, GAME_ENEMY[0], GAME_ENEMY[1], GAME_ENEMY[2])
+
+        GAME_ENEMY[0] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+        GAME_ENEMY[1] = [int(1.5*i), i, SCREEN_SIZE[0]-3*i, SCREEN_SIZE[1]-2*i]
+        GAME_ENEMY[2] = random.randint(1, 20)
+
+        SCREEN.blit(CURSOR, pygame.mouse.get_pos())
+        game_event()
+        CLOCK.tick(60)
+        pygame.display.update()
+
 
 def display_script():
     while True:
@@ -241,6 +276,7 @@ def display_script():
             display_game()
         elif END_ACTIVATE:
             display_end()
+
 
 def main():
     game_init()

@@ -9,12 +9,12 @@ window_title = 'AuTust'
 pygame.init()
 window = pygame.display.set_mode(window_size)
 pygame.display.set_caption(window_title)
-images = pygame.image.load('C:\\Users\\bogda\\Desktop\\Projects\\PyGame-Wizak\\Game\\icon.png')
+images = pygame.image.load('static/image/icon.png')
 pygame.display.set_icon(images)
 
-gif = pygame.image.load('C:\\Users\\bogda\\Desktop\\Projects\\PyGame-Wizak\\Game\\enemy.png')
+gif = pygame.image.load('static/image/enemy.png')
 gif = pygame.transform.scale(gif, [350]*2)
-gif1 = pygame.image.load('C:\\Users\\bogda\\Desktop\\Projects\\PyGame-Wizak\\Game\\sun.png')
+gif1 = pygame.image.load('static/image/sun.png')
 gif1 = pygame.transform.scale(gif1, [350]*2)
 
 clock = pygame.time.Clock()
@@ -57,9 +57,9 @@ b_pos_xy = [0]*2
 b_resolution = list(window_size)
 b_color = (255, 0, 0)
 
-# b1_pos_xy = [0]*2
-# b1_resolution = [window_size[i] for i in [0, 1]]
-# b1_color = (0, 255, 0)
+b1_pos_xy = [0]*2
+b1_resolution = [window_size[i] for i in [0, 1]]
+b1_color = (0, 255, 0)
 
 #Object enemy
 e_resolution_wh = 40
@@ -79,10 +79,10 @@ boss_pos_xy = [175, 75]
 boss_speed = [2]*2
 
 pygame.mouse.set_visible(False)
-MANUAL_CURSOR = pygame.image.load('C:\\Users\\bogda\\Desktop\\Projects\\PyGame-Wizak\\Game\\cursor.png')
+MANUAL_CURSOR = pygame.image.load('static/image/cursor.png')
 MANUAL_CURSOR = pygame.transform.scale(MANUAL_CURSOR, [50, 50])
 
-pygame.mixer.music.load('C:\\Users\\bogda\\Desktop\\Projects\\PyGame-Wizak\\Game\\lil.mp3')
+pygame.mixer.music.load('static/audio/lil.mp3')
 pygame.mixer.music.play()
 
 #Start display window
@@ -146,11 +146,11 @@ while 1:
 
         s2 = list(zip(range(h_pos_xy[0]-h_resolution_wh, h_pos_xy[0]+h_resolution_wh+1),range(h_pos_xy[1]-h_resolution_wh, h_pos_xy[1]+h_resolution_wh+1)))
 
-        print(pygame.mouse.get_pos())
-        for point in s2:
-            if pygame.mouse.get_pos() in s1:
-                print('Hit!')
-                print('Point: ',point)
+        # print(pygame.mouse.get_pos())
+        # for point in s2:
+        #     if pygame.mouse.get_pos() in s1:
+        #         print('Hit!')
+        #         print('Point: ',point)
 
         #Reflection enemy from border
         if e_pos_xy[0]+e_resolution_wh >= window_size[0]-int(b_width/2) or e_pos_xy[0] <= 0+int(b_width/2)+e_resolution_wh:
