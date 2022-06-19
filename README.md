@@ -1,2 +1,2 @@
 # PyGame-Wizak
-Game
+Game that has`t realsed yet.
